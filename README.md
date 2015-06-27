@@ -1,2 +1,3 @@
-# CIS 194: Introduction to Haskell (Spring 2013)
-Working through the exercises in this course to learn Haskell.
+# CIS 194
+Throw away solutions to the
+[CIS194 Spring 2013 homework](http://www.seas.upenn.edu/~cis194/spring13/lectures.html).
