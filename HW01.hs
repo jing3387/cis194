@@ -35,7 +35,7 @@ doubleEveryOther =
           inner [] = []
           inner ([x]) = [x]
           inner ([x, y]) = [x, 2 * y]
-          inner (x:y:zs) = x:(2 * y) : inner zs
+          inner (x:y:zs) = x:(2 * y):inner zs
 
 -- Alternate version using zipWith
 doubleEveryOther' :: [Integer] -> [Integer]
