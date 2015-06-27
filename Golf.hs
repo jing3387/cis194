@@ -24,3 +24,9 @@ skips'' l = map (f l) [1 .. length l] where
   f l' n = case drop (n - 1) l' of
     (x:xs) -> x : f xs n
     [] -> []
+
+localMaxima :: [Integer] -> [Integer]
+localMaxima (a:b:c:rest)
+  | a < b && b > c = b : localMaxima (c:rest)
+  | otherwise = localMaxima $ b:c:rest
+localMaxima _ = []
