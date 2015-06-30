@@ -1,5 +1,7 @@
 module HW04 where
 
+import Data.List hiding (insert)
+
 fun1 :: [Integer] -> Integer
 fun1 = foldr (\x -> (*) (x - 2)) 1 . filter even
 
@@ -32,11 +34,22 @@ insert x (Node h l@(Node hl _ _ _) y r@(Node hr _ _ _))
   | hl < hr = Node (hr+1) (insert x l) y r
   -- Try and insert into the right. If it's height is the same as the root
   -- update the root's height appropriately.
-  | otherwise =
-      case insert x r of
-        r'@(Node hr' _ _ _)
-          | h == hr' -> (Node (h+1) l y r')
-          | otherwise -> (Node h l y r')
+  | otherwise = case insert x r of
+                  r'@(Node hr' _ _ _)
+                    | h == hr' -> (Node (h+1) l y r')
+                    | otherwise -> (Node h l y r')
 
 foldTree :: [a] -> Tree a
 foldTree = foldr insert Leaf
+
+xor :: [Bool] -> Bool
+xor = odd . foldr (\x -> (+) (if x then 1 else 0)) 0
+
+map' :: (a -> b) -> [a] -> [b]
+map' f = foldr ((:) . f) []
+
+exclude :: Integer -> [Integer]
+exclude n = [k | i <- [1..n], j <- [1..n], i <= j, let k = i+j+2*i*j, k <= n]
+
+sieveSundaram :: Integer -> [Integer]
+sieveSundaram n = map (\x -> 2*x + 1) $ [1..n] \\ exclude
