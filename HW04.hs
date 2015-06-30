@@ -15,5 +15,28 @@ fun2 = foldr (+) 0 . takeWhile (/= 1) . drop 1 . iterate (\n ->
 
 fun2' :: Integer -> Integer
 fun2' 1 = 0
-fun2' n | even n = n + fun2' (n `div` 2)
+fun2' n
+  | even n = n + fun2' (n `div` 2)
   | otherwise = fun2' (3 * n + 1)
+
+data Tree a = Leaf
+            | Node Integer (Tree a) a (Tree a)
+            deriving (Show, Eq)
+
+insert :: a -> Tree a -> Tree a
+insert x Leaf = Node 0 Leaf x Leaf
+insert x (Node h Leaf y Leaf) = Node 1 (insert x Leaf) y Leaf
+insert x (Node h l y Leaf) = Node 1 l y (insert x Leaf)
+insert x (Node h l@(Node hl _ _ _) y r@(Node hr _ _ _))
+  -- We can insert into the left without changing the height of the tree.
+  | hl < hr = Node (hr+1) (insert x l) y r
+  -- Try and insert into the right. If it's height is the same as the root
+  -- update the root's height appropriately.
+  | otherwise =
+      case insert x r of
+        r'@(Node hr' _ _ _)
+          | h == hr' -> (Node (h+1) l y r')
+          | otherwise -> (Node h l y r')
+
+foldTree :: [a] -> Tree a
+foldTree = foldr insert Leaf
