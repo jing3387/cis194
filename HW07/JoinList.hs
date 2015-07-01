@@ -1,7 +1,13 @@
+{-# LANGUAGE FlexibleInstances, TypeSynonymInstances #-}
+
 module JoinList where
 
 import Data.Monoid
+import Data.Char
 import Sized
+import Scrabble
+import Buffer
+import Editor
 
 data JoinList m a
   = Empty
@@ -59,3 +65,39 @@ takeJ n (Append _ l r)
   | n < sl = takeJ n l
   | otherwise = l +++ takeJ (n - sl) r
   where sl = sizeJ l
+
+scoreString :: String -> Score
+scoreString s = foldr (+) 0 (map (score . toUpper) s)
+
+scoreLine :: String -> JoinList Score String
+scoreLine l = Single (scoreString l) l
+
+scoreSizeLine :: String -> JoinList (Score, Size) String
+scoreSizeLine l = Single (scoreString l, 1) l
+
+toListJ :: JoinList m a -> [a]
+toListJ Empty = []
+toListJ (Single _ a) = [a]
+toListJ (Append _ a b) = toListJ a ++ toListJ b
+
+instance Buffer (JoinList (Score, Size) String) where
+  toString = unlines . toListJ
+  fromString = foldr (\x acc -> scoreSizeLine x +++ acc) Empty . lines
+  line = indexJ 
+  replaceLine n s b =
+    let before = takeJ n b
+        after = dropJ (n + 1) b
+     in before +++ fromString s +++ after
+  numLines = getSize . snd . tag
+  value = getScore . fst . tag
+
+main = runEditor editor scratch
+  where 
+    scratch :: JoinList (Score, Size) String
+    scratch = 
+      fromString . unlines $ 
+        [ "This buffer is for notes you don't want to save, and for"
+        , "evaluation of steam valve coefficients."
+        , "To load a different file, type the character L followed"
+        , "by the name of the file."
+        ]
