@@ -1,9 +1,6 @@
-{-# OPTIONS_GHC -Wall #-}
+{-# OPTIONS_GHC -Wall -Werror #-}
 
-module Main where
-
-main :: IO ()
-main = undefined
+module HW01 where
 
 -- Converts a positive integer into a reverse list of digits. Returns the empty
 -- list for 0 and negative inputs.
@@ -30,17 +27,19 @@ toDigits = reverse . toDigitsRev
 -- Example: doubleEveryOther [1,2,3] == [1,4,3]
 doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther = reverse . inner . reverse
-  where inner :: [Integer] -> [Integer]
-        inner [] = []
-        inner ([x]) = [x]
-        inner ([x, y]) = [x, 2 * y]
-        inner (x:y:zs) = x:(2 * y):inner zs
+  where
+    inner :: [Integer] -> [Integer]
+    inner [] = []
+    inner ([x]) = [x]
+    inner ([x, y]) = [x, 2 * y]
+    inner (x:y:zs) = x:(2 * y):inner zs
 
 -- Alternate version using zipWith
 doubleEveryOther' :: [Integer] -> [Integer]
 doubleEveryOther' = reverse . inner . reverse
-  where inner :: [Integer] -> [Integer]
-        inner = zipWith (*) (cycle [1,2])
+  where
+    inner :: [Integer] -> [Integer]
+    inner = zipWith (*) (cycle [1,2])
 
 -- Calculates the sum the sum of the digits of a list of integers. The empty
 -- list has a sum of 0.

@@ -12,8 +12,10 @@ fun1' (x:xs)
   | otherwise = fun1' xs
 
 fun2 :: Integer -> Integer
-fun2 = sum . takeWhile (/= 1) . drop 1 . iterate (\n ->
-             if even n then n `div` 2 else 3 * n + 1)
+fun2 =
+  sum
+  . takeWhile (/= 1) . drop 1
+    . iterate (\n -> if even n then n `div` 2 else 3 * n + 1)
 
 fun2' :: Integer -> Integer
 fun2' 1 = 0
@@ -21,9 +23,10 @@ fun2' n
   | even n = n + fun2' (n `div` 2)
   | otherwise = fun2' (3 * n + 1)
 
-data Tree a = Leaf
-            | Node Integer (Tree a) a (Tree a)
-            deriving (Show, Eq)
+data Tree a
+  = Leaf
+  | Node Integer (Tree a) a (Tree a)
+  deriving (Show, Eq)
 
 insert :: a -> Tree a -> Tree a
 insert x Leaf = Node 0 Leaf x Leaf

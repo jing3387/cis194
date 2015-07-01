@@ -14,9 +14,10 @@ eval (Add x y) = eval x + eval y
 eval (Mul x y) = eval x * eval y
 
 evalStr :: String -> Maybe Integer
-evalStr s = case parseExp Lit Add Mul s :: Maybe ExprT of
-              Just x -> Just $ eval x
-              Nothing -> Nothing
+evalStr s =
+  case parseExp Lit Add Mul s :: Maybe ExprT of
+    Just x -> Just $ eval x
+    Nothing -> Nothing
 
 class Expr a where
   lit :: Integer -> a
